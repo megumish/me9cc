@@ -19,20 +19,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Cache/Restore the vcpkg's build artifacts.
-    - name: Run vcpkg
-      uses: lukka/run-vcpkg@v2
-      with:
-       # Response file stored in source control, it provides the list of ports and triplet(s).
-        vcpkgArguments: '@${{ env.vcpkgResponseFile }}'
-       # Location of the vcpkg as submodule of the repository.
-        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-
     - name: 'Run CMake with Ninja'
       uses: lukka/run-cmake@v2
       with:
         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
         cmakeListsTxtPath: '${{ github.workspace }}/cmakesettings.json/CMakeLists.txt'
-        useVcpkgToolchainFile: true
+        useVcpkgToolchainFile: false
         buildDirectory: '${{ runner.workspace }}/b//unixmakefiles'
         cmakeAppendedArgs: '-GNinja '
