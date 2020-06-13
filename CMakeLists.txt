@@ -8,26 +8,28 @@ project(megcc
 include(CTest)
 enable_testing()
 
-add_executable(me9cc ./me9cc/main.c)
+add_executable(me9cc me9cc/main.c)
 
 # Run Test for return integer functions
-file(GLOB test_inputs ./me9cc/tests/asset/equal_integer/input/a_int.me9c)
-foreach(test_input ${test_inputs})
-    get_filename_component(test_output_name ${test_input} NAME)
+macro(execute_test test_name)
+    file(GLOB INPUT_EQUAL_INTEGER me9cc/tests/asset/equal_integer/*)
+    file(COPY ${INPUT_EQUAL_INTEGER} DESTINATION tests/equal_integer)
     add_custom_command(
-        OUTPUT out.s
-        COMMAND $<TARGET_FILE:me9cc> ${test_input} out.s ret_int
+        OUTPUT ${test_name}.s
+        COMMAND $<TARGET_FILE:me9cc> tests/equal_integer/input/${test_name} ${test_name}.s ret_int
     )
-    set_property(SOURCE out.s PROPERTY LANGUAGE C)
-    add_executable(equal_integer ./me9cc/tests/equal_integer.c out.s)
-    target_include_directories(equal_integer PRIVATE ./me9cc/tests/asset/equal_integer/include)
+    set_property(SOURCE ${test_name}.s PROPERTY LANGUAGE C)
+    add_executable(test_${test_name} me9cc/tests/equal_integer.c ${test_name}.s)
+    target_include_directories(test_${test_name} PRIVATE me9cc/tests/include)
     add_test(
-        NAME test_a_int
-        COMMAND $<TARGET_FILE:equal_integer> ./me9cc/tests/asset/equal_integer/output/${test_output_name}.out
+        NAME test_${test_name}
+        COMMAND $<TARGET_FILE:test_${test_name}> tests/equal_integer/output/${test_name}
         CONFIGURATIONS Debug
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-endforeach()
+endmacro()
+
+execute_test(a_int)
+execute_test(add_and_sub)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
