@@ -38,4 +38,4 @@ jobs:
           buildWithCMakeArgs: '-- -v'
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
       - name: Run CTest
-        run: cd '${{ runner.workspace }}/b/ninja/' && ctest
+        run: cd '${{ runner.workspace }}/b/ninja/' && ctest -C Debug -T test --output-on-failure
