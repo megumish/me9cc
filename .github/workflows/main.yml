@@ -37,3 +37,5 @@ jobs:
           useVcpkgToolchainFile: false
           buildWithCMakeArgs: '-- -v'
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
+      - name: Run CTest
+        run: cd '${{ runner.workspace }}/b/ninja/' && ctest
