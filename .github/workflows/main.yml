@@ -17,13 +17,23 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+
     steps:
-    - name: 'Run CMake with Ninja'
-      uses: lukka/run-cmake@v2
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        cmakeListsTxtPath: '${{ github.workspace }}/cmakesettings.json/CMakeLists.txt'
-        useVcpkgToolchainFile: false
-        buildDirectory: '${{ runner.workspace }}/b//unixmakefiles'
-        cmakeAppendedArgs: '-GNinja '
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - uses: lukka/get-cmake@latest
+      - name: dir
+        run: find $RUNNER_WORKSPACE
+        shell: bash
+      - name: Run CMake+Ninja without triplet
+        uses: lukka/run-cmake@v2
+        id: runcmake
+        with:
+          cmakeGenerator: 'Ninja'  
+          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: false
+          buildWithCMakeArgs: '-- -v'
+          buildDirectory: '${{ runner.workspace }}/b/ninja/'
