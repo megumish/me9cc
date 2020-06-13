@@ -3,9 +3,9 @@
 
 int main(const int argc, const char *const *const argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        puts("usage: megcc <INPUT_FILE> <OUTPUT_FILE>");
+        puts("usage: megcc <INPUT_FILE> <OUTPUT_FILE> <ENTRY_POINT>");
         return -1;
     }
 
@@ -23,8 +23,8 @@ int main(const int argc, const char *const *const argv)
     }
 
     fprintf(output_file, ".intel_syntax noprefix\n");
-    fprintf(output_file, ".global ret_int\n");
-    fprintf(output_file, "ret_int:\n");
+    fprintf(output_file, ".global %s\n", argv[3]);
+    fprintf(output_file, "%s:\n", argv[3]);
     int input_int;
     fscanf(input_file, "%d", &input_int);
     fprintf(output_file, "  mov rax, %d\n", input_int);
